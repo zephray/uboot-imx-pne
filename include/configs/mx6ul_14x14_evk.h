@@ -89,7 +89,7 @@
 #undef CONFIG_CMD_EXPORTENV
 #undef CONFIG_CMD_IMPORTENV
 
-#define CONFIG_CMD_NET
+#undef CONFIG_CMD_NET
 #ifdef CONFIG_CMD_NET
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_DHCP
@@ -119,7 +119,7 @@
 #define CONFIG_CONS_INDEX		1
 
 /* I2C configs */
-#define CONFIG_CMD_I2C
+#undef CONFIG_CMD_I2C
 #ifdef CONFIG_CMD_I2C
 #define CONFIG_SYS_I2C
 #define CONFIG_SYS_I2C_MXC
@@ -146,11 +146,11 @@
 #define CONFIG_VIDEO
 
 /* Command definition */
-#include <config_cmd_default.h>
+/* #include <config_cmd_default.h> */
 
 #undef CONFIG_CMD_IMLS
 
-#define CONFIG_BOOTDELAY		3
+#define CONFIG_BOOTDELAY		0
 
 #define CONFIG_LOADADDR			0x80800000
 #define CONFIG_SYS_TEXT_BASE		0x87800000
@@ -164,7 +164,7 @@
 
 #ifdef CONFIG_VIDEO
 #define CONFIG_VIDEO_MODE \
-	"panel=TFT43AB\0"
+	"panel=TFT56\0"
 #else
 #define CONFIG_VIDEO_MODE ""
 #endif
@@ -201,82 +201,13 @@
 #else
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
-	CONFIG_VIDEO_MODE \
-	"script=boot.scr\0" \
-	"image=zImage\0" \
-	"console=ttymxc0\0" \
-	"fdt_high=0xffffffff\0" \
-	"initrd_high=0xffffffff\0" \
-	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
-	"fdt_addr=0x83000000\0" \
-	"boot_fdt=try\0" \
-	"ip_dyn=yes\0" \
-	"mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
-	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
-	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
-	"mmcautodetect=yes\0" \
-	"mmcargs=setenv bootargs console=${console},${baudrate} " \
-	    CONFIG_BOOTARGS_CMA_SIZE \
-		"root=${mmcroot}\0" \
-	"loadbootscript=" \
-		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
-	"bootscript=echo Running bootscript from mmc ...; " \
-		"source\0" \
-	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
-	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
-	"mmcboot=echo Booting from mmc ...; " \
-		"run mmcargs; " \
-		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
-			"if run loadfdt; then " \
-				"bootz ${loadaddr} - ${fdt_addr}; " \
-			"else " \
-				"if test ${boot_fdt} = try; then " \
-					"bootz; " \
-				"else " \
-					"echo WARN: Cannot load the DT; " \
-				"fi; " \
-			"fi; " \
-		"else " \
-			"bootz; " \
-		"fi;\0" \
-	"netargs=setenv bootargs console=${console},${baudrate} " \
-	    CONFIG_BOOTARGS_CMA_SIZE \
-		"root=/dev/nfs " \
-	"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
-		"netboot=echo Booting from net ...; " \
-		"run netargs; " \
-		"if test ${ip_dyn} = yes; then " \
-			"setenv get_cmd dhcp; " \
-		"else " \
-			"setenv get_cmd tftp; " \
-		"fi; " \
-		"${get_cmd} ${image}; " \
-		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
-			"if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
-				"bootz ${loadaddr} - ${fdt_addr}; " \
-			"else " \
-				"if test ${boot_fdt} = try; then " \
-					"bootz; " \
-				"else " \
-					"echo WARN: Cannot load the DT; " \
-				"fi; " \
-			"fi; " \
-		"else " \
-			"bootz; " \
-		"fi;\0"
+	CONFIG_VIDEO_MODE 
 
 #define CONFIG_BOOTCOMMAND \
-	   "mmc dev ${mmcdev};" \
-	   "mmc dev ${mmcdev}; if mmc rescan; then " \
-		   "if run loadbootscript; then " \
-			   "run bootscript; " \
-		   "else " \
-			   "if run loadimage; then " \
-				   "run mmcboot; " \
-			   "else run netboot; " \
-			   "fi; " \
-		   "fi; " \
-	   "else run netboot; fi"
+	   	"mmc dev ${mmcdev};" \
+	   	"fatload mmc 0:1 0x80800000 bin/zImage;" \
+		"fatload mmc 0:1 0x83000000 bin/imx6ul-14x14-evk.dtb;" \
+		"bootz 0x80800000 - 0x83000000\0"
 #endif
 
 /* Miscellaneous configurable options */
@@ -393,12 +324,12 @@
 #ifdef CONFIG_VIDEO
 #define	CONFIG_CFB_CONSOLE
 #define	CONFIG_VIDEO_MXS
-#define	CONFIG_VIDEO_LOGO
-#define	CONFIG_VIDEO_SW_CURSOR
+#undef	CONFIG_VIDEO_LOGO
+#undef	CONFIG_VIDEO_SW_CURSOR
 #define	CONFIG_VGA_AS_SINGLE_DEVICE
 #define	CONFIG_SYS_CONSOLE_IS_IN_ENV
-#define	CONFIG_SPLASH_SCREEN
-#define CONFIG_SPLASH_SCREEN_ALIGN
+#undef	CONFIG_SPLASH_SCREEN
+#undef CONFIG_SPLASH_SCREEN_ALIGN
 #define	CONFIG_CMD_BMP
 #define	CONFIG_BMP_16BPP
 #define	CONFIG_VIDEO_BMP_RLE8
@@ -406,7 +337,7 @@
 #endif
 
 /* USB Configs */
-#define CONFIG_CMD_USB
+#undef CONFIG_CMD_USB
 #ifdef CONFIG_CMD_USB
 #define CONFIG_USB_EHCI
 #define CONFIG_USB_EHCI_MX6
