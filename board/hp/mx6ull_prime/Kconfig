@@ -1,0 +1,15 @@
+if TARGET_MX6ULL_PRIME
+
+config SYS_BOARD
+       default "mx6ull_prime"
+
+config SYS_VENDOR
+       default "hp"
+
+config SYS_CONFIG_NAME
+       default "mx6ull_prime"
+
+config SYS_TEXT_BASE
+	default 0x87800000
+
+endif
