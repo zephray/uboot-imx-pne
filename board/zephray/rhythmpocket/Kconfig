@@ -1,0 +1,12 @@
+if TARGET_RHYTHMPOCKET
+
+config SYS_BOARD
+	default "rhythmpocket"
+
+config SYS_VENDOR
+	default "zephray"
+
+config SYS_CONFIG_NAME
+	default "rhythmpocket"
+
+endif

@@ -1,0 +1,6 @@
+RhythmPocket
+M:	Wenting Zhang <zephray@outlook.com>
+S:	Maintained
+F:	board/zephray/rhythmpocket
+F:	include/configs/rhythmpocket.h
+F:	configs/rhythmpocket_defconfig
