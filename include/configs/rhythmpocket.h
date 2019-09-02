@@ -33,7 +33,14 @@
 #define CONFIG_SERIAL_TAG
 
 #define CONFIG_MFG_ENV_SETTINGS \
-	CONFIG_MFG_ENV_SETTINGS_DEFAULT \
+	"mfgtool_args=setenv bootargs console=${console},${baudrate} " \
+        "uart_from_osc " \
+		"root=/dev/mmcblk0p1 " \
+        "rootwait " \
+		"\0" \
+	"kboot="MFG_BOOT_CMD"\0"\
+	"bootcmd_mfg=run mfgtool_args;" \
+        "bootz 0x80800000 - 0x83000000\0" \
 	"initrd_addr=0x86800000\0" \
 	"initrd_high=0xffffffff\0" \
 	"emmc_dev=1\0"\
@@ -41,71 +48,19 @@
 	"mtdparts=" MFG_NAND_PARTITION \
 	"\0"\
 
-#define CONFIG_DFU_ENV_SETTINGS \
-	"dfu_alt_info=image raw 0 0x800000;"\
-		"u-boot raw 0 0x4000;"\
-		"bootimg part 0 1;"\
-		"rootfs part 0 2\0" \
-
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	CONFIG_MFG_ENV_SETTINGS \
-	TEE_ENV \
-	CONFIG_DFU_ENV_SETTINGS \
-	"script=boot.scr\0" \
 	"image=zImage\0" \
 	"console=ttymxc0\0" \
-	"fdt_high=0xffffffff\0" \
-	"initrd_high=0xffffffff\0" \
-	"fdt_file=undefined\0" \
-	"fdt_addr=0x83000000\0" \
-	"tee_addr=0x84000000\0" \
-	"tee_file=uTee-7dsdb\0" \
-	"boot_fdt=try\0" \
-	"mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
-	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
-	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
-	"mmcautodetect=yes\0" \
 	"mmcargs=setenv bootargs console=${console},${baudrate} " \
-		"root=${mmcroot}\0" \
-	"loadbootscript=" \
-		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
-	"bootscript=echo Running bootscript from mmc ...; " \
-		"source\0" \
-	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
-	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
-	"loadtee=fatload mmc ${mmcdev}:${mmcpart} ${tee_addr} ${tee_file}\0" \
+		"root=/dev/mmcblk0p1 rootwait\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"run mmcargs; " \
-		"if test ${tee} = yes; then " \
-			"run loadfdt; run loadtee; bootm ${tee_addr} - ${fdt_addr}; " \
-		"else " \
-			"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
-				"if run loadfdt; then " \
-					"bootz ${loadaddr} - ${fdt_addr}; " \
-				"else " \
-					"if test ${boot_fdt} = try; then " \
-						"bootz; " \
-					"else " \
-						"echo WARN: Cannot load the DT; " \
-					"fi; " \
-				"fi; " \
-			"else " \
-				"bootz; " \
-			"fi; " \
-		"fi;\0" \
+		"ext4load mmc 0 0x80800000 boot/zImage; " \
+        "ext4load mmc 0 0x83000000 boot/imx7s-rhythmpocket.dtb; " \
+		"bootz 0x80800000 - 0x83000000\0" \
 
 #define CONFIG_BOOTCOMMAND \
-	   "run findfdt;" \
-	   "mmc dev ${mmcdev};" \
-	   "mmc dev ${mmcdev}; if mmc rescan; then " \
-		   "if run loadbootscript; then " \
-			   "run bootscript; " \
-		   "else " \
-			   "if run loadimage; then " \
-				   "run mmcboot; " \
-			   "fi; " \
-		   "fi; " \
-	   "fi"
+	"run mmcboot; " \
 
 #define CONFIG_SYS_MEMTEST_START	0x80000000
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + 0x20000000)
